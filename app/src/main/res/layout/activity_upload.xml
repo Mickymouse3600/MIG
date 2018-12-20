@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="374dp"
+        android:layout_height="214dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/image_preview"
+        tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal_background" />
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="0dp"
+        android:alpha="0" />
+
+    <EditText
+        android:id="@+id/edit_text_file_name"
+        android:layout_width="369dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="240dp"
+        android:ems="10"
+        android:hint="@string/enter_a_name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/edit_description"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/image_view"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-2dp"
+        android:layout_marginBottom="194dp"
+        android:contentDescription="@string/description"
+        android:ems="10"
+        android:hint="@string/description"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine" />
+
+    <EditText
+        android:id="@+id/edit_Contact"
+        android:layout_width="273dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/image_view"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="146dp"
+        android:contentDescription="@string/whatsapp_number_233"
+        android:ems="10"
+        android:hint="@string/whatsapp_number_233"
+        android:importantForAutofill="no"
+        android:inputType="phone" />
+
+    <Button
+        android:id="@+id/button_choose_image"
+        android:layout_width="165dp"
+        android:layout_height="54dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="214dp"
+        android:layout_marginBottom="0dp"
+        android:text="@string/select_image" />
+
+    <Button
+        android:id="@+id/button_upload"
+        android:layout_width="153dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-141dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toEndOf="@+id/image_view"
+        android:text="@string/upload" />
+
+    <Button
+        android:id="@+id/button_show_uploads"
+        android:layout_width="7dp"
+        android:layout_height="11dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="209dp"
+        android:layout_marginBottom="0dp"
+        android:alpha="0"
+        android:text="@string/upload" />
+
+
+</RelativeLayout>

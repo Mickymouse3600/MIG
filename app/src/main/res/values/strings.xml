@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MADE IN GHANA</string>
+    <string name="upload">Upload</string>
+    <string name="Show">Show</string>
+    <string name="select_image">Select Image</string>
+    <string name="whatsapp_number_233">WhatsApp number (+233)</string>
+    <string name="image_preview">Image Preview</string>
+    <string name="description">Description</string>
+    <string name="enter_a_name">Enter a Name</string>
+</resources>
