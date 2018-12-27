@@ -38,9 +38,12 @@ public class UploadActivity extends AppCompatActivity {
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private Button mTextViewShowUploads;
+
     private Uri mImageUri;
+
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
+
     private StorageTask mUploadTask;
 
     @Override
@@ -136,8 +139,8 @@ public class UploadActivity extends AppCompatActivity {
                             }, 500);
 
                             Toast.makeText(UploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(), taskSnapshot.getMetadata().getReference().getDownloadUrl().toString(),
-                                    mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim());
+                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim(),
+                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
                         }
