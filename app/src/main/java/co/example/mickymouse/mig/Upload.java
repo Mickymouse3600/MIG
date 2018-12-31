@@ -9,9 +9,11 @@ public class Upload {
     private String mContact;
     private String mKey;
 
+    public Upload(){
 
+    }
 
-    public Upload(String name, String imageUrl, String description,String contact ) {
+    public Upload(String name, String imageUrl, String description, String contact ) {
 
         if (name.trim().equals("")) {
             name = "No Name";

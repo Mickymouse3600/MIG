@@ -53,31 +53,14 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
 
-        StorageReference mStoreRef = FirebaseStorage.getInstance().getReference();
-
-        mStoreRef.child("uploads/" + model.getBase64Image())
-                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'photos/profile.png'
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-                Toast.makeText(MainActivity.this,"image not dowloaded", Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
-                    mUploads.add(upload);
-                    Log.i("URL",upload.getImageUrl());
+                     Upload upload = postSnapshot.getValue(Upload.class);
+                     mUploads.add(upload);
+                     Log.i("URL",upload.getImageUrl());
 
                 }
 
