@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                      Upload upload = postSnapshot.getValue(Upload.class);
                      mUploads.add(upload);
-                     Log.i("URL",upload.getImageUrl());
+                     //Log.i("URL",upload.getImageUrl());
 
                 }
 

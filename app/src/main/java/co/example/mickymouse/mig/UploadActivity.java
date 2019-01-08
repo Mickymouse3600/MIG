@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -15,8 +16,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,6 +44,7 @@ public class UploadActivity extends AppCompatActivity {
     private Button mTextViewShowUploads;
 
     private Uri mImageUri;
+    private String profileImageUrl;
 
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
@@ -123,8 +128,46 @@ public class UploadActivity extends AppCompatActivity {
 
     private void  uploadFile() {
         if (mImageUri != null) {
+
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));
+
+            UploadTask uploadTask;
+            uploadTask = mStorageRef.putFile(mImageUri );
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+
+                    return mStorageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        mImageUri = task.getResult();
+
+
+                        Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mImageUri.toString()
+                                ,mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim());
+
+
+                        String uploadId = mDatabaseRef.push().getKey();
+                        mDatabaseRef.child(uploadId).setValue(upload);
+
+                        profileImageUrl = mImageUri.toString();
+                        Log.i("Url",profileImageUrl);
+                    } else {
+
+                        // ...
+                    }
+                }
+            });
 
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -139,10 +182,9 @@ public class UploadActivity extends AppCompatActivity {
                             }, 500);
 
                             Toast.makeText(UploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-                            Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim(),
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+
+
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
