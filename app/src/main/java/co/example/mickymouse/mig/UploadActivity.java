@@ -127,7 +127,10 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void  uploadFile() {
+
+        mButtonUpload.setEnabled(false);
         if (mImageUri != null) {
+
 
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));

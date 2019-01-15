@@ -25,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private DatabaseReference mDatabaseRef;
+    private FirebaseStorage mStorage;
     private List<Upload> mUploads;
 
 
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         mProgressCircle = findViewById(R.id.progress_circle);
 
         mUploads = new ArrayList<>();
-
+        mStorage = FirebaseStorage.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
 
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                      //Log.i("URL",upload.getImageUrl());
 
                 }
+                Collections.reverse(mUploads);
 
                 mAdapter = new ImageAdapter(MainActivity.this, mUploads);
 
