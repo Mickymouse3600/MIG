@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -40,7 +42,34 @@ public class MainActivity extends AppCompatActivity {
     private List<Upload> mUploads;
     private FloatingActionButton Fab;
 
+    private int ITEM_LOAD_COUNT=5;
+    private int Total_item=0,last_visible_item;
+    private boolean isLoading=false,isMaxData=false;
+    String last_node="",last_key="";
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id=item.getItemId();
+
+        if (id==R.id.item_refresh){
+            isMaxData=false;
+            last_node=mAdapter.getLastItKey();
+            mAdapter.removeLastItem();
+            mAdapter.notifyDataSetChanged();
+            getLastKeyFromFirebase();
+            getUploads();
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +79,11 @@ public class MainActivity extends AppCompatActivity {
         Fab=findViewById(R.id.fab);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final LinearLayoutManager LayoutManager= new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(LayoutManager);
 
         mProgressCircle = findViewById(R.id.progress_circle);
+
 
         Fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +95,26 @@ public class MainActivity extends AppCompatActivity {
         mUploads = new ArrayList<>();
         mStorage = FirebaseStorage.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        getLastKeyFromFirebase();
 
+        getUploads();
 
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                Total_item= LayoutManager.getItemCount();
+                last_visible_item=LayoutManager.findLastVisibleItemPosition();
+
+                if (!isLoading && Total_item <=((last_visible_item + ITEM_LOAD_COUNT ))){
+                    getUploads();
+                    isLoading=true;
+                }
+
+            }
+        });
+        
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,23 +140,87 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-@Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
+
+    private void getUploads() {
+
+        if(!isMaxData){
+
+            Query query;
+            if(TextUtils.isEmpty(last_node))
+                query= FirebaseDatabase.getInstance().getReference()
+                        .child("Uploads")
+                        .orderByKey()
+                        .limitToFirst(ITEM_LOAD_COUNT);
+
+        else
+
+            query= FirebaseDatabase.getInstance().getReference()
+                    .child("Uploads")
+                    .orderByKey()
+                    .startAt(last_node)
+                    .limitToFirst(ITEM_LOAD_COUNT);
 
 
-}
-@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren())
+                {
 
-    int id = item.getItemId();
+                    List<Upload> newUploads= new ArrayList<>();
+                    for(DataSnapshot uploadsnapshot:dataSnapshot.getChildren())
+                    {
+                        newUploads.add(uploadsnapshot.getValue(Upload.class));
 
-    if (id == R.id.btn_add) {
+                    }
 
-        Intent intent = new Intent(this, UploadActivity.class);
-        startActivity(intent);
+                     last_node=newUploads.get(newUploads.size()-1).getKey();
+                    if (!last_node.equals(last_key))
+                        newUploads.remove(newUploads.size()-1);
+                    else
+                        last_node="end";
+                    mAdapter.addAll(newUploads);
+                    isLoading=false;
+                }
+                else
+                    {
+                        isLoading=false;
+                        isMaxData=true;
+             }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                isLoading=false;
+            }
+        });
+
+
+        }
     }
-    return true;}
+
+    private void getLastKeyFromFirebase() {
+
+        final Query getLastKey= FirebaseDatabase.getInstance().getReference()
+                .child("Uploads")
+                .orderByKey()
+                .limitToLast(1);
+
+        getLastKey.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot lastkey : dataSnapshot.getChildren())
+                    last_key=lastkey.getKey();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this,"Cannot get last key",Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+    }
+
 
 }

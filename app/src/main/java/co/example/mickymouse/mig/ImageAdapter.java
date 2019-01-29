@@ -25,6 +25,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         mUploads = uploads;
     }
 
+    public void addAll(List<Upload> NewUploads){
+
+        int intisize=mUploads.size();
+        mUploads.addAll(NewUploads);
+        notifyItemRangeChanged(intisize,NewUploads.size());
+    }
+
+    public void removeLastItem(){
+
+        mUploads.remove(mUploads.size()-1);
+    }
+    public String getLastItKey(){
+        return mUploads.get(mUploads.size()-1).getKey();
+    }
+
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.cardview, parent, false);
