@@ -7,14 +7,13 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="374dp"
-        android:layout_height="214dp"
+        android:layout_width="match_parent"
+        android:layout_height="331dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="5dp"
-        android:contentDescription="@string/image_preview"
-        tools:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal_background" />
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="7dp"
+        android:contentDescription="@string/image_preview" />
 
 
     <ProgressBar
@@ -30,12 +29,12 @@
 
     <EditText
         android:id="@+id/edit_text_file_name"
-        android:layout_width="369dp"
+        android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="11dp"
-        android:layout_marginBottom="240dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="258dp"
         android:ems="10"
         android:hint="@string/enter_a_name"
         android:inputType="textPersonName" />
@@ -46,13 +45,15 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/image_view"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="-2dp"
-        android:layout_marginBottom="194dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="204dp"
+        android:autoSizeMaxTextSize="30dp"
         android:contentDescription="@string/description"
         android:ems="10"
         android:hint="@string/description"
         android:importantForAutofill="no"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:maxLines="2" />
 
     <EditText
         android:id="@+id/edit_Contact"
@@ -61,7 +62,7 @@
         android:layout_alignStart="@+id/image_view"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
-        android:layout_marginBottom="146dp"
+        android:layout_marginBottom="145dp"
         android:contentDescription="@string/whatsapp_number_233"
         android:ems="10"
         android:hint="@string/whatsapp_number_233"
@@ -70,21 +71,23 @@
 
     <Button
         android:id="@+id/button_choose_image"
-        android:layout_width="165dp"
-        android:layout_height="54dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="189dp"
+        android:layout_height="64dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="214dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="217dp"
+        android:layout_marginBottom="29dp"
         android:text="@string/select_image" />
 
     <Button
         android:id="@+id/button_upload"
-        android:layout_width="153dp"
-        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="144dp"
+        android:layout_height="66dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="-141dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="-148dp"
+        android:layout_marginBottom="25dp"
         android:layout_toEndOf="@+id/image_view"
         android:text="@string/upload" />
 

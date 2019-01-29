@@ -1,10 +1,15 @@
 package co.example.mickymouse.mig;
 
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +38,7 @@ import com.squareup.picasso.Picasso;
 public class UploadActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int REQUEST_CAMERA=1, SELECT_FILE=0;
 
     private Button mButtonChooseImage;
     private Button mButtonUpload;
@@ -56,8 +62,9 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
-        getSupportActionBar().setTitle("Upload");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setTitle("Upload");
+
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
           
 
         mButtonChooseImage = (Button) findViewById(R.id.button_choose_image);
@@ -102,21 +109,56 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void openFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        final CharSequence[] items={"Camera","Gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(UploadActivity.this);
+        builder.setTitle("Add Image");
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (items[i].equals("Camera")) {
+
+                    Intent intent = new Intent();
+                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, REQUEST_CAMERA);
+
+                } else if (items[i].equals("Gallery")) {
+
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, SELECT_FILE);
+
+                } else if (items[i].equals("Cancel")) {
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+        builder.show();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public  void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-                && data != null && data.getData() != null) {
-            mImageUri = data.getData();
+        if (resultCode == Activity.RESULT_OK ) {
 
-            Picasso.get().load(mImageUri).into(mImageView);
+            if (requestCode == REQUEST_CAMERA ) {
+
+                Bundle bundle = data.getExtras();
+                final Bitmap bmp = (Bitmap) bundle.get("data");
+                mImageView.setImageBitmap(bmp);
+
+
+            } else if (requestCode == SELECT_FILE && resultCode == RESULT_OK
+                    && data != null && data.getData() != null) {
+                mImageUri = data.getData();
+
+                Picasso.get().load(mImageUri).into(mImageView);
+            }
+
         }
     }
 
@@ -131,22 +173,19 @@ public class UploadActivity extends AppCompatActivity {
         mButtonUpload.setEnabled(false);
         if (mImageUri != null) {
 
-
             StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));
 
             UploadTask uploadTask;
             uploadTask = mStorageRef.putFile(mImageUri );
 
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            final Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
-
                     // Continue with the task to get the download URL
-
                     return mStorageRef.getDownloadUrl();
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -155,14 +194,10 @@ public class UploadActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         mImageUri = task.getResult();
 
-
                         Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mImageUri.toString()
                                 ,mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim());
-
-
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(uploadId).setValue(upload);
-
                         profileImageUrl = mImageUri.toString();
                         Log.i("Url",profileImageUrl);
                     } else {

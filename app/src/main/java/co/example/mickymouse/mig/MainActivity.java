@@ -3,6 +3,7 @@ package co.example.mickymouse.mig;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
     private List<Upload> mUploads;
+    private FloatingActionButton Fab;
+
 
 
     @Override
@@ -44,11 +47,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Fab=findViewById(R.id.fab);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mProgressCircle = findViewById(R.id.progress_circle);
+
+        Fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,UploadActivity.class));
+            }
+        });
 
         mUploads = new ArrayList<>();
         mStorage = FirebaseStorage.getInstance();
