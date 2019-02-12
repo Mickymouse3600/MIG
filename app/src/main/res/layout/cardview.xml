@@ -28,7 +28,7 @@
                 android:layout_width="67dp"
                 android:layout_height="44dp"
                 android:padding="5dp"
-                app:srcCompat="@drawable/icon2" />
+                app:srcCompat="@drawable/icon8" />
 
             <TextView
                 android:id="@+id/text_view_name"
@@ -50,7 +50,8 @@
                 android:id="@+id/image_view_upload"
                 android:layout_width="match_parent"
                 android:layout_height="349dp"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                tools:srcCompat="@drawable/rectangle" />
 
             <TextView
                 android:id="@+id/textView_description"
