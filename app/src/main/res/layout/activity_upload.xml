@@ -8,23 +8,24 @@
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="347dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
         android:contentDescription="@string/image_preview" />
 
 
     <ProgressBar
         android:id="@+id/progress_bar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_width="400dp"
+        android:layout_height="26dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="200dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginTop="380dp"
+        android:layout_marginEnd="11dp"
         android:alpha="0" />
 
     <EditText
@@ -35,9 +36,21 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="35dp"
         android:layout_marginBottom="194dp"
-        android:ems="10"
-        android:hint="@string/enter_a_name"
-        android:inputType="textPersonName" />
+        android:hint="@string/Image_name"
+        android:inputType="textPersonName"
+        android:maxLength="20" />
+
+    <EditText
+        android:id="@+id/companyname"
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="236dp"
+        android:hint="MIG#CompanyName"
+        android:inputType="textPersonName|textCapCharacters"
+        android:maxLength="20" />
 
     <EditText
         android:id="@+id/edit_description"
@@ -49,7 +62,7 @@
         android:layout_marginBottom="149dp"
         android:autoSizeMaxTextSize="30dp"
         android:contentDescription="@string/description"
-        android:ems="10"
+        android:maxLength="30"
         android:hint="@string/description"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
@@ -65,6 +78,7 @@
         android:layout_marginBottom="105dp"
         android:contentDescription="@string/whatsapp_number_233"
         android:ems="10"
+        android:maxLength="10"
         android:hint="@string/whatsapp_number_233"
         android:importantForAutofill="no"
         android:inputType="phone" />

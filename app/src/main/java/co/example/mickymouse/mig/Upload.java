@@ -3,6 +3,7 @@ package co.example.mickymouse.mig;
 import com.google.firebase.database.Exclude;
 
 public class Upload {
+    private String mCompanyName;
     private String mName;
     private String mImageUrl;
     private String mDescription;
@@ -14,13 +15,14 @@ public class Upload {
 
     }
 
-    public Upload(String name, String imageUrl, String description, String contact ) {
+    public Upload(String name,String CompanyName, String imageUrl, String description, String contact ) {
 
         if (name.trim().equals("")) {
             name = "No Name";
         }
 
         mName = name;
+        mCompanyName=CompanyName;
         mImageUrl = imageUrl;
         mDescription=description;
         mContact=contact;
@@ -34,12 +36,13 @@ public class Upload {
         mName = name;
     }
 
-    public String getImageUrl() { return mImageUrl;
-    }
+    public String getCompanyName() { return mCompanyName; }
 
-    public void setImageUrl(String imageUrl) {
-        this.mImageUrl = imageUrl;
-    }
+    public void setCompanyName(String CompanyName) {  this.mCompanyName = CompanyName;}
+
+    public String getImageUrl() { return mImageUrl; }
+
+    public void setImageUrl(String imageUrl) { this.mImageUrl = imageUrl; }
 
     public void setDescription(String description) {
         this.mDescription = description;

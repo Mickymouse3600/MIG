@@ -8,5 +8,7 @@
     <string name="description">Description</string>
     <string name="enter_a_name">Enter a Name</string>
     <string name="action_settings">Settings</string>
+    <string name="Image_name">Image Name</string>
+    <string name="sign_out">Sign_Out</string>
 
 </resources>

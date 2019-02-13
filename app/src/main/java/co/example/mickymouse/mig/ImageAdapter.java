@@ -50,14 +50,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
         holder.textViewName.setText(uploadCurrent.getName());
+        holder.textViewCompany.setText( "MIG @"+uploadCurrent.getCompanyName());
         holder.textViewDescription.setText(uploadCurrent.getDescription());
         holder.textViewContact.setText(uploadCurrent.getContact());
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .fit()
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher)
-                .into(holder.imageView);
+                .placeholder(R.drawable.icon8)
+                 .into(holder.imageView);
 
     }
 
@@ -72,6 +73,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
         public TextView textViewName;
+        public TextView textViewCompany;
         public ImageView imageView;
         public TextView textViewDescription;
         public TextView textViewContact;
@@ -80,6 +82,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             super(itemView);
 
             textViewName = itemView.findViewById(R.id.text_view_name);
+            textViewCompany= itemView.findViewById(R.id.company_name);
             imageView = itemView.findViewById(R.id.image_view_upload);
             textViewDescription = itemView.findViewById(R.id.textView_description);
             textViewContact = itemView.findViewById(R.id.textView_contact);

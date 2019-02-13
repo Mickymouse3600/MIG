@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -35,6 +36,8 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 public class UploadActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -45,6 +48,7 @@ public class UploadActivity extends AppCompatActivity {
     private EditText mEditTextDescription;
     private EditText mEditTextContact;
     private EditText mEditTextFileName;
+    private EditText mEditTextCompanyName;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private Button mTextViewShowUploads;
@@ -72,6 +76,7 @@ public class UploadActivity extends AppCompatActivity {
         mEditTextDescription = (EditText) findViewById(R.id.edit_description);
         mEditTextContact =(EditText) findViewById(R.id.edit_Contact);
         mEditTextFileName = (EditText)findViewById(R.id.edit_text_file_name);
+        mEditTextCompanyName = (EditText)findViewById(R.id.companyname);
         mImageView = (ImageView) findViewById(R.id.image_view);
         mProgressBar =(ProgressBar) findViewById(R.id.progress_bar);
         mTextViewShowUploads = (Button) findViewById(R.id.button_show_uploads);
@@ -120,9 +125,15 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (items[i].equals("Camera")) {
 
-                    Intent intent = new Intent();
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    File photo = new File(Environment.getExternalStorageDirectory(),  "Pic.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photo));
+                    mImageUri= Uri.fromFile(photo);
                     startActivityForResult(intent, REQUEST_CAMERA);
+
+                   // Intent intent = new Intent();
+                    //intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 
                 } else if (items[i].equals("Gallery")) {
 
@@ -147,14 +158,36 @@ public class UploadActivity extends AppCompatActivity {
 
             if (requestCode == REQUEST_CAMERA ) {
 
-                Bundle bundle = data.getExtras();
+               /** Bundle bundle = data.getExtras();
                 final Bitmap bmp = (Bitmap) bundle.get("data");
                 mImageView.setImageBitmap(bmp);
+                mImageUri=data.getData();
+                 Log.i("imageURI", String.valueOf( bundle.get("data")));
+                **/
+               // Uri selectedImage = mImageUri;
+                getContentResolver().notifyChange(mImageUri, null);
+                ContentResolver cr = getContentResolver();
+                Bitmap bitmap;
+                try {
+                    bitmap = android.provider.MediaStore.Images.Media
+                            .getBitmap(cr, mImageUri);
+
+                    mImageView.setImageBitmap(bitmap);
+                    Toast.makeText(this, mImageUri.toString(),
+                            Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT)
+                            .show();
+                    Log.e("Camera", e.toString());
+                }
+
+
 
 
             } else if (requestCode == SELECT_FILE && resultCode == RESULT_OK
                     && data != null && data.getData() != null) {
                 mImageUri = data.getData();
+                Log.i("imageURI", String.valueOf(  data.getData()));
 
                 Picasso.get().load(mImageUri).into(mImageView);
             }
@@ -170,9 +203,9 @@ public class UploadActivity extends AppCompatActivity {
 
     private void  uploadFile() {
 
-        mButtonUpload.setEnabled(false);
-        if (mImageUri != null) {
 
+        if (mImageUri != null) {
+            mButtonUpload.setEnabled(false);
             mStorageRef= mStorageRef.child(System.currentTimeMillis()
                     + "." + getFileExtension(mImageUri));
 
@@ -194,11 +227,13 @@ public class UploadActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         mImageUri = task.getResult();
 
-                        Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mImageUri.toString()
+                        Upload upload = new Upload(mEditTextFileName.getText().toString().trim(),mEditTextCompanyName.getText().toString().trim(),mImageUri.toString()
                                 ,mEditTextDescription.getText().toString().trim(),mEditTextContact.getText().toString().trim());
+
                         String uploadId = mDatabaseRef.push().getKey();
                         mDatabaseRef.child(uploadId).setValue(upload);
                         profileImageUrl = mImageUri.toString();
+
                         Log.i("Url",profileImageUrl);
                         Toast.makeText(UploadActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
 
@@ -210,5 +245,11 @@ public class UploadActivity extends AppCompatActivity {
             });
 
          }
+         else {
+
+            Toast.makeText(UploadActivity.this, "Problem Incared", Toast.LENGTH_LONG).show();
+
+            mButtonUpload.setEnabled(true);
+        }
 
 }}
