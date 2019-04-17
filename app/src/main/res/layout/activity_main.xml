@@ -34,13 +34,10 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             style="@style/Widget.Design.FloatingActionButton"
-            android:layout_width="83dp"
-            android:layout_height="59dp"
+            android:layout_width="82dp"
+            android:layout_height="55dp"
             android:layout_gravity="bottom|end"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_margin="@dimen/fab_margin"
             app:backgroundTint="@color/colorPrimaryDark"
             app:srcCompat="@drawable/ic_add_circle_outline_black_24dp" />
     </android.support.design.widget.CoordinatorLayout>
